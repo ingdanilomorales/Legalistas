@@ -6,3 +6,8 @@ services:
     buildCommand: pip install -r requirements.txt
     startCommand: gunicorn run:app
     healthCheckPath: /
+    envVars:
+      - key: SUPABASE_URL
+        value: https://pfluvloryjvwrgxgsslk.supabase.co
+      - key: SUPABASE_SECRET_KEY
+        sync: false
