@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}Editar {{ client.full_name }} | Legalistas{% endblock %}
+{% block content %}
+<div class="mb-4"><a class="small text-decoration-none" href="{{ url_for('client_detail', client_id=client.client_id) }}">← Volver a la ficha</a><p class="eyebrow mt-3 mb-1">Editar ficha</p><h1 class="h2 mb-1">{{ client.full_name }}</h1><p class="text-secondary mb-0">Actualiza los datos del cliente y su plan de pago.</p></div>
+<form class="panel p-4" method="post"><div class="row g-3"><div class="col-md-8"><label class="form-label" for="full_name">Nombre completo</label><input class="form-control" id="full_name" name="full_name" value="{{ client.full_name }}" required></div><div class="col-md-4"><label class="form-label" for="matter">Materia</label><select class="form-select" id="matter" name="matter" required>{% for key, label in matters.items() %}<option value="{{ key }}" {% if client.matter == key %}selected{% endif %}>{{ label }}</option>{% endfor %}</select></div><div class="col-md-4"><label class="form-label" for="client_entry_date">Fecha de ingreso del cliente</label><input class="form-control" id="client_entry_date" name="client_entry_date" type="date" value="{{ client.created_at }}" required></div><div class="col-md-4"><label class="form-label" for="total_amount">Monto total del servicio</label><div class="input-group"><span class="input-group-text">$</span><input class="form-control" id="total_amount" name="total_amount" type="number" min="1" step="1" value="{{ client.total_amount }}" required></div></div><div class="col-md-4"><label class="form-label" for="pays_in_installments">¿Pagará en cuotas?</label><select class="form-select" id="pays_in_installments" name="pays_in_installments"><option value="no" {% if client.pays_in_installments == 'no' %}selected{% endif %}>No</option><option value="si" {% if client.pays_in_installments == 'si' %}selected{% endif %}>Sí</option></select></div><div class="col-md-4"><label class="form-label" for="installment_count">Cantidad de cuotas posteriores</label><input class="form-control" id="installment_count" name="installment_count" type="number" min="0" value="{{ client.installment_count }}"></div><div class="col-md-4"><label class="form-label" for="first_installment_date">Fecha de la primera cuota</label><input class="form-control" id="first_installment_date" name="first_installment_date" type="date" value="{{ client.first_installment_date }}"></div></div><div class="alert alert-warning mt-4 mb-0">Si ya existen pagos manuales, puedes modificar los datos personales, pero no cambiar el plan financiero para proteger el historial.</div><hr class="my-4"><div class="d-flex justify-content-end gap-2"><a class="btn btn-light" href="{{ url_for('client_detail', client_id=client.client_id) }}">Cancelar</a><button class="btn btn-primary" type="submit">Guardar cambios</button></div></form>
+<script>
+	const paymentMode = document.getElementById('pays_in_installments');
+	const installmentCount = document.getElementById('installment_count');
+	const firstInstallmentDate = document.getElementById('first_installment_date');
+	function toggleInstallmentFields() {
+		const enabled = paymentMode.value === 'si';
+		firstInstallmentDate.disabled = !enabled;
+		firstInstallmentDate.required = enabled;
+		installmentCount.disabled = !enabled;
+		if (!enabled) {
+			firstInstallmentDate.value = '';
+			installmentCount.value = '0';
+		}
+	}
+	paymentMode.addEventListener('change', toggleInstallmentFields);
+	toggleInstallmentFields();
+</script>
+{% endblock %}

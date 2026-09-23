@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}Resumen | Legalistas{% endblock %}
+{% block content %}
+<div class="d-flex flex-wrap justify-content-between align-items-end gap-3 mb-4">
+  <div class="d-flex align-items-center gap-3"><img src="{{ url_for('static', filename='img/legalistas-logo.jpeg') }}" alt="Logotipo de Legalistas" class="hero-logo"><div><p class="eyebrow mb-1">Panel financiero</p><h1 class="display-6 mb-1">Resumen de {{ dashboard.month_label }}</h1><p class="text-secondary mb-0">Ingresos reales, cuotas esperadas y estado de cobranza.</p></div></div>
+  <a class="btn btn-primary" href="{{ url_for('new_client') }}">+ Nuevo cliente</a>
+</div>
+<div class="row g-3 mb-4">
+  <div class="col-md-6 col-xl-3"><div class="metric"><span>Ingresos del mes</span><strong>{{ dashboard.income_display }}</strong><small>Pagos registrados</small></div></div>
+  <div class="col-md-6 col-xl-3"><div class="metric"><span>Meta mensual</span><strong>{{ dashboard.target_display }}</strong><small>Objetivo fijo</small></div></div>
+  <div class="col-md-6 col-xl-3"><div class="metric metric-warm"><span>Falta para la meta</span><strong>{{ dashboard.remaining_display }}</strong><small>Saldo de objetivo</small></div></div>
+  <div class="col-md-6 col-xl-3"><div class="metric metric-green"><span>Proyectado</span><strong>{{ dashboard.projected_display }}</strong><small>Cuotas esperadas</small></div></div>
+</div>
+<section class="panel p-4">
+  <div class="d-flex justify-content-between align-items-center mb-3"><h2 class="h5 mb-0">Estado de cuotas del mes</h2><a href="{{ url_for('report') }}" class="link-primary">Ver informe completo</a></div>
+  <div class="row g-3">
+    <div class="col-sm-4"><div class="status-box success"><strong>{{ dashboard.paid_count }}</strong><span>Pagadas</span></div></div>
+    <div class="col-sm-4"><div class="status-box danger"><strong>{{ dashboard.overdue_count }}</strong><span>Atrasadas</span></div></div>
+    <div class="col-sm-4"><div class="status-box neutral"><strong>{{ dashboard.pending_count }}</strong><span>Pendientes</span></div></div>
+  </div>
+</section>
+<section class="panel p-4 mt-4">
+  <div class="d-flex justify-content-between align-items-center mb-3"><div><h2 class="h5 mb-1">Clientes morosos</h2><p class="text-secondary mb-0">Cuotas mensuales impagas de meses anteriores.</p></div><span class="badge status-overdue">{{ dashboard.overdue_clients|length }} clientes</span></div>
+  <div class="table-responsive"><table class="table align-middle mb-0"><thead><tr><th>Cliente</th><th>Materia</th><th>Cuotas atrasadas</th><th class="text-end">Total atrasado</th></tr></thead><tbody>{% for client in dashboard.overdue_clients %}<tr class="status-row-overdue"><td class="fw-semibold"><a href="{{ url_for('client_detail', client_id=client.client_id) }}">{{ client.full_name }}</a></td><td>{{ client.matter_label }}</td><td>{{ client.installment_count }}</td><td class="text-end fw-semibold">{{ client.amount_display }}</td></tr>{% else %}<tr><td colspan="4" class="text-center py-4 text-secondary">No hay clientes con cuotas atrasadas de meses anteriores.</td></tr>{% endfor %}</tbody></table></div>
+</section>
+{% endblock %}

@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}Nuevo cliente | Legalistas{% endblock %}
+{% block content %}
+<div class="mb-4"><p class="eyebrow mb-1">Nueva ficha</p><h1 class="h2 mb-1">Ingresar cliente</h1><p class="text-secondary mb-0">El pago inicial se registra automáticamente al crear la ficha.</p></div>
+<form class="panel p-4" method="post"><div class="row g-3"><div class="col-md-8"><label class="form-label" for="full_name">Nombre completo</label><input class="form-control" id="full_name" name="full_name" required></div><div class="col-md-4"><label class="form-label" for="matter">Materia</label><select class="form-select" id="matter" name="matter" required><option value="">Seleccionar</option>{% for key, label in matters.items() %}<option value="{{ key }}">{{ label }}</option>{% endfor %}</select></div><div class="col-md-4"><label class="form-label" for="client_entry_date">Fecha de ingreso del cliente</label><input class="form-control" id="client_entry_date" name="client_entry_date" type="date" required></div><div class="col-md-4"><label class="form-label" for="total_amount">Monto total del servicio</label><div class="input-group"><span class="input-group-text">$</span><input class="form-control" id="total_amount" name="total_amount" type="number" min="1" step="1" required></div></div><div class="col-md-4"><label class="form-label" for="pays_in_installments">¿Pagará en cuotas?</label><select class="form-select" id="pays_in_installments" name="pays_in_installments"><option value="no">No</option><option value="si">Sí</option></select></div><div class="col-md-4"><label class="form-label" for="receipt_issued">¿Se generó boleta por el pago inicial?</label><select class="form-select" id="receipt_issued" name="receipt_issued" required><option value="no">No</option><option value="si">Sí</option></select></div><div class="col-md-4"><label class="form-label" for="installment_count">Cantidad de cuotas posteriores</label><input class="form-control" id="installment_count" name="installment_count" type="number" min="0" value="0"></div><div class="col-md-4"><label class="form-label" for="first_installment_date">Fecha de la primera cuota</label><input class="form-control" id="first_installment_date" name="first_installment_date" type="date" disabled></div></div><hr class="my-4"><div class="d-flex justify-content-end gap-2"><a class="btn btn-light" href="{{ url_for('clients') }}">Cancelar</a><button class="btn btn-primary" type="submit">Crear ficha</button></div></form>
+<script>
+	const paymentMode = document.getElementById('pays_in_installments');
+	const installmentCount = document.getElementById('installment_count');
+	const firstInstallmentDate = document.getElementById('first_installment_date');
+	function toggleInstallmentFields() {
+		const enabled = paymentMode.value === 'si';
+		firstInstallmentDate.disabled = !enabled;
+		firstInstallmentDate.required = enabled;
+		installmentCount.disabled = !enabled;
+		if (!enabled) {
+			firstInstallmentDate.value = '';
+			installmentCount.value = '0';
+		}
+	}
+	paymentMode.addEventListener('change', toggleInstallmentFields);
+	toggleInstallmentFields();
+</script>
+{% endblock %}

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Contexto Legalistas"
+  short_description: "Carga la especificación funcional de la aplicación Legalistas"
+  default_prompt: "Lee documentacion/spec.md y usa ese contexto para trabajar en el proyecto."
